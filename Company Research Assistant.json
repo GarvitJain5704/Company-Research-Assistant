@@ -1,0 +1,124 @@
+{
+  "name": "Company Research Assistant",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "33f92216-d816-4e97-af0c-fc89cf2d3e92",
+      "name": "When chat message received",
+      "webhookId": "0d0bb2ee-47c4-42f9-87af-ef32b17f1fe6"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a Company Research Assistant AI Agent that helps sales teams prepare for outreach.\n\nYour job:\n\nResearch the company using tools (Wikipedia + openai model).\n\nExtract key details:\n\nWhat the company does\n\nIndustry\n\nSize (if available)\n\nProducts / Services\n\nProblems they are solving\n\nWhy they might need our product\n\nGenerate a structured Account Plan in this format (Markdown):\n\nAccount Plan for <Company Name>\n\nCompany Overview\n\nProducts / Services\n\nIndustry & Market Position\n\nCompany Size / Stage (if found)\n\nProblems the Company is Solving\n\nWhy They Might Need Our Product\n\nRecommended Sales Approach\n\nOpportunities\n\nRisks / Red Flags\n\nKey Stakeholders (if available)\n\nNext Steps\n\nConversational Behavior:\n\nIf the user is confused or vague, ask them for the company name and what they care about (e.g. hiring, expansion, risks).\n\nIf the user is clear and efficient, directly generate the account plan.\n\nIf the user goes off-topic, tell them that you are meant to research companies only and can't answer questions for any other topic.\n\nUpdating a Section:\n\nThe user may send you a previous account plan and say things like \"update Opportunities\" or \"rewrite Risks more concisely\".\n\nWhen previous_plan is provided, treat it as the current plan.\n\nModify ONLY the requested section, but output the full updated plan in the same structure.\n\nConflict Handling:\n\nIf different sources disagree (e.g. different revenue numbers), say:\n\"I found conflicting information about X: Source A says Y, Source B says Z. Do you want me to dig deeper?\"\n\nKeep answers simple, structured, and professional. Always respond in Markdown.\nonly feed relevant information to the model. don't exceed it's context window."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "7fdd156c-6fa3-4c15-8160-1b491fa40d67",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        80,
+        208
+      ],
+      "id": "ae70ebfb-821e-4add-b203-bb1ee355d2ee",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "JLzoFgATfN5HBwBY",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolWikipedia",
+      "typeVersion": 1,
+      "position": [
+        368,
+        208
+      ],
+      "id": "040dee81-5a29-4c1b-85e2-766ca69a4bb4",
+      "name": "Wikipedia",
+      "notes": "Use this to search and retrieve neutral info about the company, its industry, and history from Wikipedia."
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wikipedia": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6e1e6197-13d7-4c30-9c11-c89cd0869f80",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "55d288f0e33d51c4b8c963a9861d61254d40b749af63d2fd999635599835d33e"
+  },
+  "id": "9SJ5g2vFRshmpgbz",
+  "tags": []
+}
